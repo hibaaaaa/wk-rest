@@ -1,0 +1,24 @@
+version: '3'
+services:
+  mongo:
+    image: mongo
+    restart: always
+  jguweka:
+    image: jguweka/jguweka:OAS3
+    restart: always
+    links:
+      - "mongo:mongodb"
+    depends_on:
+      - mongo
+    labels:
+      - "service-name:jguweka"
+      - "service-type:app-srv"
+      - "environment:test"
+  loadb:
+    image: dockercloud/haproxy
+    volumes: 
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    ports:
+      - "8082:80"
+    links:
+      - jguweka
